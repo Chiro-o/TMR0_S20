@@ -34,6 +34,13 @@ PROCESSOR 16F887
 
 // config statements should precede project file includes.
 #include <xc.inc>
+  
+REINICIO_TMR0 MACRO
+    BANKSEL TMR0
+    MOVLW   61		; 50ms 
+    MOVWF   TMR0	; Cargamos valor inicial
+    BCF	    T0IF	; Limpiamos bandera
+    ENDM
 
 PSECT udata_shr	    ; Memoria compartida
     W_TEMP:	    DS 1
@@ -54,7 +61,7 @@ PUSH:
     MOVWF   STATUS_TEMP
 
 ISR:
-    CALL    REINICIO_TMR0   ; Reinicio del TMR0
+    REINICIO_TMR0	    ; Reinicio del TMR0
     INCF    PORTD	    ; Incrementamos en 1 el PORTD (Extra de lo visto en clase)
     
 POP:
@@ -93,7 +100,7 @@ CONFIG_PORTS:
     CLRF    TRISD	    ; PORTD como salida
     BANKSEL PORTD   
     CLRF    PORTD	    ; APAGAR PORTD 
-    RETURN
+    RETURN		    ; Comentario
     
 ; Configuramos el uC para usar un oscilador interno a 4MHz    
 CONFIG_RELOJ:
@@ -120,12 +127,12 @@ CONFIG_TMR0:
     return
     
 ; Cada vez que se cumple el tiempo del TMR0 es necesario reiniciarlo.
-REINICIO_TMR0:
+/*REINICIO_TMR0:
     BANKSEL TMR0
     MOVLW   61		; 50ms 
     MOVWF   TMR0	; Cargamos valor inicial
     BCF	    T0IF	; Limpiamos bandera
-    return
+    return*/
     
 CONFIG_INT:
     BANKSEL INTCON
